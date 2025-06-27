@@ -114,10 +114,12 @@ export class IPLOCInstance extends InstanceBase<IPLOCModuleConfig> {
 					'obsState',
 					'gameAutomationData',
 					'localeInfo',
+					'runtimeConfig',
+					'bundleDeclaredConfig',
 				],
 			},
 			{
-				[DASHBOARD_BUNDLE_NAME]: '^4.14.0',
+				[DASHBOARD_BUNDLE_NAME]: '^4.18.0',
 			}
 		)
 
@@ -245,6 +247,10 @@ export class IPLOCInstance extends InstanceBase<IPLOCModuleConfig> {
 			case 'swapColorsInternally':
 				this.checkFeedbacks(IPLOCFeedback.colors_swapped)
 				break
+			case 'bundleDeclaredConfig':
+			case 'runtimeConfig':
+				this.setActionDefinitions(getActionDefinitions(this, this.socket))
+				this.setFeedbackDefinitions(getFeedbackDefinitions(this, this.socket))
 		}
 	}
 }

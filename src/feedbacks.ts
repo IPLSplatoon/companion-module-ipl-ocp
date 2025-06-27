@@ -1,6 +1,14 @@
 import { colord } from 'colord'
 import { CompanionFeedbackDefinitions, combineRgb } from '@companion-module/base'
-import { DASHBOARD_BUNDLE_NAME, IPLOCBundleMap, isBlank, isEmpty, UNKNOWN_MODE_NAME, UNKNOWN_STAGE_NAME } from './util'
+import {
+	DASHBOARD_BUNDLE_NAME,
+	getBreakSceneChoices,
+	IPLOCBundleMap,
+	isBlank,
+	isEmpty,
+	UNKNOWN_MODE_NAME,
+	UNKNOWN_STAGE_NAME,
+} from './util'
 import { NodeCGConnector } from './NodeCGConnector'
 import { IPLOCInstance } from './index'
 
@@ -133,11 +141,7 @@ export function getFeedbackDefinitions(
 					label: 'scene',
 					id: 'scene',
 					default: 'main',
-					choices: [
-						{ id: 'main', label: 'Main' },
-						{ id: 'teams', label: 'Teams' },
-						{ id: 'stages', label: 'Stages' },
-					],
+					choices: getBreakSceneChoices(socket),
 				},
 			],
 			callback: function (feedback) {

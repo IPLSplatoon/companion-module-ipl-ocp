@@ -2,7 +2,14 @@ import { DateTime } from 'luxon'
 import { CompanionActionDefinitions } from '@companion-module/base'
 import { NodeCGConnector } from './NodeCGConnector'
 import { ActiveBreakScene } from './types'
-import { DASHBOARD_BUNDLE_NAME, IPLOCBundleMap, isBlank, UNKNOWN_MODE_NAME, UNKNOWN_STAGE_NAME } from './util'
+import {
+	DASHBOARD_BUNDLE_NAME,
+	getBreakSceneChoices,
+	IPLOCBundleMap,
+	isBlank,
+	UNKNOWN_MODE_NAME,
+	UNKNOWN_STAGE_NAME,
+} from './util'
 import semver from 'semver'
 import { IPLOCInstance } from './index'
 
@@ -140,6 +147,21 @@ export function getActionDefinitions(
 				}
 			},
 		},
+
+		//                 store.runtimeConfig.activeGraphicsBundles.forEach(activeBundle => {
+		//                     const declaredConfig = store.bundleDeclaredConfig[activeBundle];
+		//                     if (declaredConfig != null) {
+		//                         declaredConfig.scenes.forEach(scene => {
+		//                             if (!result.some(otherScene => scene.value === otherScene.value)) {
+		//                                 result.push({
+		//                                     value: scene.value,
+		//                                     name: scene.names?.[i18n.i18next.language.toUpperCase()] ?? scene.value
+		//                                 });
+		//                             }
+		//                         });
+		//                     }
+		//                 })
+
 		change_break_scene: {
 			name: 'Change break scene',
 			options: [
@@ -148,19 +170,14 @@ export function getActionDefinitions(
 					label: 'Scene',
 					id: 'scene',
 					default: 'main',
-					choices: [
-						{ id: 'main', label: 'Main' },
-						{ id: 'teams', label: 'Teams' },
-						{ id: 'stages', label: 'Stages' },
-					],
+					choices: getBreakSceneChoices(socket),
 				},
 			],
 			callback: (action) => {
 				const newScene = String(action.options.scene)
 				if (
 					newScene != null &&
-					newScene !== socket.replicants[DASHBOARD_BUNDLE_NAME]['activeBreakScene'] &&
-					['main', 'teams', 'stages'].includes(newScene)
+					newScene !== socket.replicants[DASHBOARD_BUNDLE_NAME]['activeBreakScene']
 				) {
 					socket.proposeReplicantAssignment('activeBreakScene', DASHBOARD_BUNDLE_NAME, newScene as ActiveBreakScene)
 				}
